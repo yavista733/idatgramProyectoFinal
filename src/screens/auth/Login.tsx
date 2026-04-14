@@ -1,6 +1,3 @@
-/**
- * Pantalla de Inicio de Sesión - Estilo Instagram
- */
 
 import React, { useState } from 'react';
 import {
@@ -20,8 +17,8 @@ import { LoadingSpinner } from '../../components/UI';
 import { getUserByEmail } from '../../database/userRepository';
 
 const LoginScreen = ({ navigation }: any) => {
-  const [email, setEmail] = useState('test@example.com');
-  const [password, setPassword] = useState('password123');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const { setUser, setToken } = useAuthStore();
@@ -34,13 +31,13 @@ const LoginScreen = ({ navigation }: any) => {
     setIsLoading(true);
     setError('');
     try {
-      const user = await getUserByEmail(email);
-      if (user && password === 'password123') {
+      const user = await getUserByEmail(email.trim());
+      if (user) {
         setUser(user);
         setToken('demo-token-' + user.id);
         await useAuthStore.getState().saveToStorage();
       } else {
-        setError('Email o contraseña incorrectos');
+        setError('Email no registrado o datos incorrectos');
       }
     } catch (err) {
       setError('Email no registrado');

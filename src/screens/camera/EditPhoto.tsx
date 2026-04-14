@@ -1,9 +1,3 @@
-/**
- * Pantalla de Edición de Foto / Nuevo Post
- * Usa postsStore.addPost con isSubmitting para deshabilitar botón
- * Indicador visual de sincronización pendiente
- */
-
 import React from 'react';
 import {
   View,
@@ -21,6 +15,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { usePostsStore } from '../../store/postsStore';
 import { useAuthStore } from '../../store/authStore';
 import { saveImagePermanently } from '../../utils/helpers';
+import { Avatar } from '../../components/UI';
 
 const { width } = Dimensions.get('window');
 
@@ -58,7 +53,7 @@ const EditPhotoScreen = ({ route, navigation }: any) => {
 
       <ScrollView>
         <View style={styles.captionRow}>
-          <Image source={{ uri: imageUri }} style={styles.thumbnail} />
+          <Avatar source={user?.profileImageUrl} name={user?.displayName} size="sm" />
           <TextInput
             style={styles.captionInput}
             placeholder="Escribe una descripción..."

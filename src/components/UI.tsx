@@ -1,7 +1,3 @@
-/**
- * Componentes de UI Reutilizables - Instagram style
- */
-
 import React from 'react';
 import {
   Text,
@@ -12,40 +8,45 @@ import {
   StyleSheet,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { getInitials } from '../utils/helpers';
 
-/**
- * Avatar de usuario
- */
-export const Avatar = ({ source, size = 'md', onPress }: any) => {
+
+export const Avatar = ({ source, name, size = 'md', onPress }: any) => {
   const sizeValue: Record<string,number> = { sm: 32, md: 44, lg: 56, xl: 86 };
   const px = sizeValue[size] ?? 44;
 
   const imgStyle = { width: px, height: px, borderRadius: px / 2, backgroundColor: '#dbdbdb' as const };
 
-  const content = source ? (
-    <Image source={typeof source === 'string' ? { uri: source } : source} style={imgStyle} />
-  ) : (
-    <View style={[imgStyle, styles.avatarPlaceholder]}>
-      <Ionicons name="person" size={Math.round(px * 0.55)} color="#999" />
-    </View>
-  );
+  let content;
+  if (source) {
+    content = <Image source={typeof source === 'string' ? { uri: source } : source} style={imgStyle} />;
+  } else if (name) {
+    content = (
+      <View style={[imgStyle, styles.avatarPlaceholder]}>
+        <Text style={{ fontSize: px * 0.4, fontWeight: '600', color: '#555' }}>
+          {getInitials(name)}
+        </Text>
+      </View>
+    );
+  } else {
+    content = (
+      <View style={[imgStyle, styles.avatarPlaceholder]}>
+        <Ionicons name="person" size={Math.round(px * 0.55)} color="#999" />
+      </View>
+    );
+  }
 
   if (onPress) return <TouchableOpacity onPress={onPress}>{content}</TouchableOpacity>;
   return content;
 };
 
-/**
- * Loading spinner
- */
+
 export const LoadingSpinner = ({ color = '#3797EF' }: any) => (
   <View style={styles.centered}>
     <ActivityIndicator size="large" color={color} />
   </View>
 );
 
-/**
- * Empty state
- */
 export const EmptyState = ({ icon = 'images-outline', title = 'Sin resultados', message = '' }: any) => (
   <View style={styles.emptyState}>
     <Ionicons name={icon as any} size={60} color="#dbdbdb" />

@@ -1,6 +1,3 @@
-/**
- * Pantalla de Editar Perfil
- */
 
 import React, { useState } from 'react';
 import { View, ScrollView, TextInput, TouchableOpacity, Text, StyleSheet } from 'react-native';
@@ -10,6 +7,7 @@ import * as ImagePicker from 'expo-image-picker';
 import { useAuthStore } from '../../store/authStore';
 import { updateUser } from '../../database/userRepository';
 import { Avatar, LoadingSpinner } from '../../components/UI';
+import { saveImagePermanently } from '../../utils/helpers';
 
 const EditProfileScreen = ({ navigation }: any) => {
   const { user, setUser } = useAuthStore();
@@ -25,7 +23,12 @@ const EditProfileScreen = ({ navigation }: any) => {
       aspect: [1, 1],
       quality: 0.8,
     });
-    if (!result.canceled) setProfileImage(result.assets[0].uri);
+    
+    if (!result.canceled) {
+      console.log('📸 Foto seleccionada, guardando en directorio local...');
+      const permanentUri = await saveImagePermanently(result.assets[0].uri);
+      setProfileImage(permanentUri);
+    }
   };
 
   const handleSave = async () => {

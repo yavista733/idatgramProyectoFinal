@@ -1,17 +1,9 @@
-/**
- * ConnectivityStore – Estado global de conectividad
- * Sensor de Conectividad Real: verifica acceso a internet cada 30 segundos
- * haciendo un fetch HEAD a google.com (src/utils/connectivity.ts)
- *
- * Al recuperar internet → llama a fullSync() automáticamente
- * Requisito del profesor: isOnline en el estado global + sync automático al reconectar
- */
-
 import { create } from 'zustand';
+import { AppState, AppStateStatus } from 'react-native';
 import { checkRealConnectivity } from '../utils/connectivity';
 import { fullSync, startAutoSync, stopAutoSync } from '../services/syncService';
 
-const POLLING_INTERVAL_MS = 30000; // 30 segundos
+const POLLING_INTERVAL_MS = 30000;
 
 interface ConnectivityStore {
   isOnline: boolean;
@@ -34,15 +26,26 @@ export const useConnectivityStore = create<ConnectivityStore>((set, get) => ({
     startAutoSync(POLLING_INTERVAL_MS);
 
     // Verificar conectividad real con fetch HEAD a google.com cada 30 segundos
+    const appStateSubscription = AppState.addEventListener('change', async (nextAppState: AppStateStatus) => {
+      if (nextAppState === 'active') {
+        console.log('🚀 App regresó al primer plano - Verificando conexión...');
+        const nowOnline = await checkRealConnectivity();
+        set({ isOnline: nowOnline });
+        
+        if (nowOnline) {
+          console.log('🔄 Conexión detectada al volver - Sincronizando datos...');
+          get().forceSync();
+        }
+      }
+    });
+
     const pollId = setInterval(async () => {
       const wasOnline = get().isOnline;
       const nowOnline = await checkRealConnectivity();
-
       set({ isOnline: nowOnline });
 
-      // Si pasamos de offline → online, sincronizar inmediatamente
       if (!wasOnline && nowOnline) {
-        console.log('🌐 Reconexión detectada (fetch HEAD google.com) – sincronizando...');
+        console.log('🌐 Reconexión detectada por polling – Sincronizando...');
         get().forceSync();
       }
     }, POLLING_INTERVAL_MS);
@@ -60,6 +63,7 @@ export const useConnectivityStore = create<ConnectivityStore>((set, get) => ({
 
     // Retorna función de limpieza
     return () => {
+      appStateSubscription.remove();
       clearInterval(pollId);
       stopAutoSync();
     };

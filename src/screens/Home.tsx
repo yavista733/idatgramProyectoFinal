@@ -1,9 +1,3 @@
-/**
- * Pantalla Home / Feed
- * Consume postsStore (Zustand) → SQLite + Supabase
- * Likes y comentarios funcionales
- */
-
 import React, { useEffect, useCallback } from 'react';
 import {
   View, FlatList, RefreshControl, Image,
@@ -187,7 +181,7 @@ const HomeScreen = ({ navigation }: any) => {
       </View>
 
       <FlatList
-        data={posts}
+        data={posts.filter((post) => post.user_id === currentUser?.id)}
         renderItem={renderPost}
         keyExtractor={(item) => item.id}
         ListEmptyComponent={

@@ -200,7 +200,7 @@ export async function uploadUser(user: User): Promise<boolean> {
       email: user.email,
       display_name: user.displayName,
       bio: user.bio || '',
-      profile_image_url: user.profileImageUrl || '',
+      profile_image_url: '', 
       followers_count: user.followersCount || 0,
       following_count: user.followingCount || 0,
       posts_count: user.postsCount || 0,

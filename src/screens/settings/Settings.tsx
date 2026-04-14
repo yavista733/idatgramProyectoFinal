@@ -1,9 +1,5 @@
-/**
- * Pantalla de Configuración
- */
-
 import React from 'react';
-import { View, ScrollView, TouchableOpacity, Text, StyleSheet } from 'react-native';
+import { View, ScrollView, TouchableOpacity, Text, StyleSheet, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useAuthStore } from '../../store/authStore';
@@ -12,10 +8,10 @@ const SettingsScreen = ({ navigation }: any) => {
   const { logout } = useAuthStore();
 
   const menuItems = [
-    { icon: 'notifications-outline', label: 'Notificaciones', action: () => {} },
-    { icon: 'lock-closed-outline', label: 'Privacidad y seguridad', action: () => {} },
-    { icon: 'help-circle-outline', label: 'Ayuda', action: () => {} },
-    { icon: 'information-circle-outline', label: 'Información', action: () => {} },
+    { icon: 'notifications-outline', label: 'Notificaciones', action: () => Alert.alert('Ajustes', 'Función de notificaciones próximamente.') },
+    { icon: 'lock-closed-outline', label: 'Privacidad y seguridad', action: () => Alert.alert('Seguridad', 'Configuración de privacidad local activada.') },
+    { icon: 'help-circle-outline', label: 'Ayuda', action: () => Alert.alert('Soporte', 'Contacta con soporte en idatgram.help@example.com') },
+    { icon: 'information-circle-outline', label: 'Información', action: () => Alert.alert('Idatgram v1.0', 'Proyecto Final de Desarrollo de Sistemas.') },
   ];
 
   return (
